@@ -25,7 +25,7 @@ jobs:
           echo "SECRET_ACCESS_KEY=${{ secrets.SECRET_ACCESS_KEY }}" >> .env
 
       - name: Connect to serverless namespace
-        run: doctl serverless connect nsarchive-upload
+        run: doctl serverless connect nsarchive
 
       - name: Deploy function
         run: doctl serverless deploy .
