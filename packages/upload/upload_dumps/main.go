@@ -29,7 +29,7 @@ func upload_dump(bucket *b2.Bucket, dtype string) error {
 		return err
 	}
 
-	req.Header.Set("User-Agent", "upc")
+	req.Header.Set("User-Agent", "nsarchive by upc")
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
