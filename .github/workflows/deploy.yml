@@ -29,3 +29,6 @@ jobs:
       
     - name: Deploy function
       run: doctl serverless deploy .
+
+    - name: Clean up .env file
+      run: rm .env
