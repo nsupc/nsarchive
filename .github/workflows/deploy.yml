@@ -2,7 +2,7 @@ name: DigitalOcean Function Deploy
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "main" ]
 
 jobs:
   deploy:
