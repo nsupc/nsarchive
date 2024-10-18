@@ -7,7 +7,7 @@ packages:
     parameters: {}
     annotations: {}
     functions:
-      - name: upload_dumps
+      - name: dumps
         binary: false
         main: "Main"
         runtime: go:1.20
@@ -26,3 +26,22 @@ packages:
             sourceType: scheduler
             sourceDetails:
               cron: 0 8 * * *
+      - name: foundings
+        binary: false
+        main: "Main"
+        runtime: go:1.20
+        web: false
+        webSecure: false
+        parameters: {}
+        environment:
+          {
+            accessKeyID: "${accessKeyID}",
+            secretAccessKey: "${secretAccessKey}",
+          }
+        annotations: {}
+        limits: { timeout: 300000 }
+        triggers:
+          - name: daily
+            sourceType: scheduler
+            sourceDetails:
+              cron: 0 6 * * *

@@ -60,14 +60,14 @@ func upload_dump(bucket *b2.Bucket, dtype string) error {
 }
 
 func Main() {
-	accessKeyID, present := os.LookupEnv("accessKeyID")
+	accessKeyID, present := os.LookupEnv("ACCESS_KEY_ID")
 	if !present {
-		log.Fatal("Set accessKeyID ENV var")
+		log.Fatal("Set ACCESS_KEY_ID ENV var")
 	}
 
-	secretAccessKey, present := os.LookupEnv("secretAccessKey")
+	secretAccessKey, present := os.LookupEnv("SECRET_ACCESS_KEY")
 	if !present {
-		log.Fatal("Set secretAccessKey ENV var")
+		log.Fatal("Set SECRET_ACCESS_KEY ENV var")
 	}
 
 	ctx := context.Background()

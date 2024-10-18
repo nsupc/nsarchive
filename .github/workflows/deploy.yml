@@ -2,33 +2,33 @@ name: DigitalOcean Function Deploy
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Install doctl
-      uses: digitalocean/action-doctl@v2
-      with: 
-        token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-        
-    - name: Install doctl serverless
-      run: doctl serverless install
+      - uses: actions/checkout@v4
 
-    - name: Create .env file
-      run: |
-          echo "accessKeyID=${{ secrets.ACCESS_KEY_ID }}" >> .env
-          echo "secretAccessKey=${{ secrets.SECRET_ACCESS_KEY }}" >> .env
-      
-    - name: Connect to serverless namespace
-      run: doctl serverless connect nsarchive-upload
-      
-    - name: Deploy function
-      run: doctl serverless deploy .
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
 
-    - name: Clean up .env file
-      run: rm .env
+      - name: Install doctl serverless
+        run: doctl serverless install
+
+      - name: Create .env file
+        run: |
+          echo "ACCESS_KEY_ID=${{ secrets.ACCESS_KEY_ID }}" >> .env
+          echo "SECRET_ACCESS_KEY=${{ secrets.SECRET_ACCESS_KEY }}" >> .env
+
+      - name: Connect to serverless namespace
+        run: doctl serverless connect nsarchive-upload
+
+      - name: Deploy function
+        run: doctl serverless deploy .
+
+      - name: Clean up .env file
+        run: rm .env

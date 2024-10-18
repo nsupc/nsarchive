@@ -1,4 +1,4 @@
-module mirror
+module dumps
 
 go 1.21
 
