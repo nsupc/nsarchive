@@ -134,7 +134,9 @@ func upload(bucket *b2.Bucket, date time.Time, data []byte) error {
 
 	ctx := context.Background()
 
-	writer := bucket.Object(filename).NewWriter(ctx)
+	writer := bucket.Object(filename).NewWriter(ctx, b2.WithAttrsOption(&b2.Attrs{
+		ContentType: "application/json",
+	}))
 	defer writer.Close()
 
 	fmt.Println("Uploading to B2...")

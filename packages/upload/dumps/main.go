@@ -47,7 +47,9 @@ func upload_dump(bucket *b2.Bucket, dtype string) error {
 
 	ctx := context.Background()
 
-	writer := bucket.Object(filename).NewWriter(ctx)
+	writer := bucket.Object(filename).NewWriter(ctx, b2.WithAttrsOption(&b2.Attrs{
+		ContentType: "application/gzip",
+	}))
 	defer writer.Close()
 
 	fmt.Println("Uploading to B2...")
