@@ -16,8 +16,8 @@ packages:
         parameters: {}
         environment:
           {
-            accessKeyID: "${ACCESS_KEY_ID}",
-            secretAccessKey: "${SECRET_ACCESS_KEY}",
+            ACCESS_KEY_ID: "${ACCESS_KEY_ID}",
+            SECRET_ACCESS_KEY: "${SECRET_ACCESS_KEY}",
           }
         annotations: {}
         limits: { timeout: 300000 }
@@ -35,8 +35,8 @@ packages:
         parameters: {}
         environment:
           {
-            accessKeyID: "${ACCESS_KEY_ID}",
-            secretAccessKey: "${SECRET_ACCESS_KEY}",
+            ACCESS_KEY_ID: "${ACCESS_KEY_ID}",
+            SECRET_ACCESS_KEY: "${SECRET_ACCESS_KEY}",
           }
         annotations: {}
         limits: { timeout: 300000 }
