@@ -24,3 +24,5 @@ go.work
 .env
 
 .deployed
+
+*.html

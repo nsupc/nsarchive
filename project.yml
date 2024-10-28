@@ -22,7 +22,7 @@ packages:
         annotations: {}
         limits: { timeout: 300000 }
         triggers:
-          - name: daily
+          - name: dump-scheduler
             sourceType: scheduler
             sourceDetails:
               cron: 0 8 * * *
@@ -41,7 +41,26 @@ packages:
         annotations: {}
         limits: { timeout: 300000 }
         triggers:
-          - name: daily
+          - name: founding-scheduler
             sourceType: scheduler
             sourceDetails:
               cron: 0 6 * * *
+      - name: site
+        binary: false
+        main: "Main"
+        runtime: go:1.20
+        web: false
+        webSecure: false
+        parameters: {}
+        environment:
+          {
+            ACCESS_KEY_ID: "${ACCESS_KEY_ID}",
+            SECRET_ACCESS_KEY: "${SECRET_ACCESS_KEY}",
+          }
+        annotations: {}
+        limits: { timeout: 300000 }
+        triggers:
+          - name: site-scheduler
+            sourceType: scheduler
+            sourceDetails:
+              cron: 30 6 * * *
