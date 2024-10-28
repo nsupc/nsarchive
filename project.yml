@@ -19,6 +19,7 @@ packages:
             ACCESS_KEY_ID: "${ACCESS_KEY_ID}",
             SECRET_ACCESS_KEY: "${SECRET_ACCESS_KEY}",
             LOG_DESTINATIONS: '[{"logtail":{"token":"${LOGTAIL_TOKEN}"}}]',
+            HEARTBEAT_URL: "${HEARTBEAT_DUMPS}",
           }
         annotations: {}
         limits: { timeout: 300000 }
@@ -39,6 +40,7 @@ packages:
             ACCESS_KEY_ID: "${ACCESS_KEY_ID}",
             SECRET_ACCESS_KEY: "${SECRET_ACCESS_KEY}",
             LOG_DESTINATIONS: '[{"logtail":{"token":"${LOGTAIL_TOKEN}"}}]',
+            HEARTBEAT_URL: "${HEARTBEAT_FOUNDINGS}",
           }
         annotations: {}
         limits: { timeout: 300000 }
@@ -59,6 +61,7 @@ packages:
             ACCESS_KEY_ID: "${ACCESS_KEY_ID}",
             SECRET_ACCESS_KEY: "${SECRET_ACCESS_KEY}",
             LOG_DESTINATIONS: '[{"logtail":{"token":"${LOGTAIL_TOKEN}"}}]',
+            HEARTBEAT_URL: "${HEARTBEAT_INDEX}",
           }
         annotations: {}
         limits: { timeout: 300000 }

@@ -24,6 +24,9 @@ jobs:
           echo "ACCESS_KEY_ID=${{ secrets.ACCESS_KEY_ID }}" >> .env
           echo "SECRET_ACCESS_KEY=${{ secrets.SECRET_ACCESS_KEY }}" >> .env
           echo "LOGTAIL_TOKEN=${{ secrets.LOGTAIL_TOKEN }}" >> .env
+          echo "HEARTBEAT_DUMPS=${{ secrets.HEARTBEAT_DUMPS }}" >> .env
+          echo "HEARTBEAT_FOUNDINGS=${{ secrets.HEARTBEAT_FOUNDINGS }}" >> .env
+          echo "HEARTBEAT_INDEX=${{ secrets.HEARTBEAT_INDEX }}" >> .env
 
       - name: Connect to serverless namespace
         run: doctl serverless connect nsarchive

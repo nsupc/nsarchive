@@ -72,16 +72,21 @@ func Main() {
 		log.Fatal("Set SECRET_ACCESS_KEY ENV var")
 	}
 
+	heartbeatUrl, present := os.LookupEnv("HEARTBEAT_URL")
+	if !present {
+		log.Fatal("Set HEARTBEAT_URL ENV var")
+	}
+
 	ctx := context.Background()
 
 	client, err := b2.NewClient(ctx, accessKeyID, secretAccessKey)
 	if err != nil {
-		log.Fatalf("Error creating backblaze client: %s", err)
+		log.Fatalf("Error creating backblaze client: %v", err)
 	}
 
 	bucket, err := client.Bucket(ctx, bucketName)
 	if err != nil {
-		log.Fatalf("Error retrieving bucket: %s", err)
+		log.Fatalf("Error retrieving bucket: %v", err)
 	}
 
 	err = upload_dump(bucket, "nation")
@@ -97,4 +102,9 @@ func Main() {
 	}
 
 	log.Println("Successfully uploaded dumps")
+
+	_, err = http.Get(heartbeatUrl)
+	if err != nil {
+		log.Fatalf("Error sending heartbeat: %v", err)
+	}
 }
