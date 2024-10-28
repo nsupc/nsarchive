@@ -23,6 +23,7 @@ jobs:
         run: |
           echo "ACCESS_KEY_ID=${{ secrets.ACCESS_KEY_ID }}" >> .env
           echo "SECRET_ACCESS_KEY=${{ secrets.SECRET_ACCESS_KEY }}" >> .env
+          echo "LOGTAIL_TOKEN=${{ secrets.LOGTAIL_TOKEN }}" >> .env
 
       - name: Connect to serverless namespace
         run: doctl serverless connect nsarchive
