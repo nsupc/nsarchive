@@ -139,7 +139,7 @@ func upload(bucket *b2.Bucket, date time.Time, data []byte) error {
 	}))
 	defer writer.Close()
 
-	fmt.Println("Uploading to B2...")
+	log.Println("Uploading to B2...")
 	if _, err := io.Copy(writer, bytes.NewReader(data)); err != nil {
 		writer.Close()
 		return err

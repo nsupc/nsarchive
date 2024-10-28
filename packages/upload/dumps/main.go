@@ -52,7 +52,7 @@ func upload_dump(bucket *b2.Bucket, dtype string) error {
 	}))
 	defer writer.Close()
 
-	fmt.Println("Uploading to B2...")
+	log.Println("Uploading to B2...")
 	if _, err := io.Copy(writer, resp.Body); err != nil {
 		writer.Close()
 		return err
