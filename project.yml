@@ -63,4 +63,4 @@ packages:
           - name: site-scheduler
             sourceType: scheduler
             sourceDetails:
-              cron: 30 6 * * *
+              cron: 30 8 * * *

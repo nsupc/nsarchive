@@ -19,7 +19,7 @@ var bucketName = "nsarchive"
 // regions file format: regions/YYYY-MM-DD-regions.xml.gz
 // foundings file format: foundings/YYYY-MM-DD-foundings.json
 
-// var urlPrefix = "https://archive.nsupc.dev/file/nsarchive/%s"
+var urlPrefix = "file/nsarchive/%s"
 
 func monthFromIndex(index int) string {
 	months := []string{"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"}
@@ -215,8 +215,7 @@ func createFileList(bucket *b2.Bucket) (Files, error) {
 
 		day := result.getDate(date)
 
-		// day.NationsUrl = fmt.Sprintf(urlPrefix, nations.Object().Name())
-		day.NationsUrl = nations.Object().Name()
+		day.NationsUrl = fmt.Sprintf(urlPrefix, nations.Object().Name())
 	}
 
 	regions := bucket.List(ctx, b2.ListPrefix("regions/"))
@@ -228,8 +227,7 @@ func createFileList(bucket *b2.Bucket) (Files, error) {
 
 		day := result.getDate(date)
 
-		// day.RegionsUrl = fmt.Sprintf(urlPrefix, regions.Object().Name())
-		day.RegionsUrl = regions.Object().Name()
+		day.RegionsUrl = fmt.Sprintf(urlPrefix, regions.Object().Name())
 	}
 
 	foundings := bucket.List(ctx, b2.ListPrefix("foundings/"))
@@ -241,8 +239,7 @@ func createFileList(bucket *b2.Bucket) (Files, error) {
 
 		day := result.getDate(date)
 
-		// day.FoundingsUrl = fmt.Sprintf(urlPrefix, foundings.Object().Name())
-		day.FoundingsUrl = foundings.Object().Name()
+		day.FoundingsUrl = fmt.Sprintf(urlPrefix, foundings.Object().Name())
 	}
 
 	// sort the result (foundings mess it up sometimes)
