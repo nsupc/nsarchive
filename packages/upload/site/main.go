@@ -70,7 +70,9 @@ func (f *Files) generateHTML() []byte {
 		summary { font-weight: bold; cursor: pointer; }
 		ul { margin: 5px 20px; }
 	`)
+
 	buffer.WriteString("</style></head><body>")
+
 	buffer.WriteString(`
 		<h1>NSArchive</h1>
 		<p>NSArchive (suggestions for a better name are welcome) is a collection of daily snapshots of <a href="https://www.nationstates.net">NationStates</a> data. NationStates produces two daily dumps -- <a href="https://www.nationstates.net/pages/api.html#dumps">Nations and Regions</a> -- each day, which are archived here, and founding data is collected from the <a href="https://www.nationstates.net/pages/api.html#worldapi">World API</a>. Founding data is based on UTC time and is always one day behind. The source code for this project can be viewed on GitHub <a href="https://github.com/nsupc/nsarchive">here</a>.</p>
@@ -86,7 +88,7 @@ func (f *Files) generateHTML() []byte {
 
 			for _, day := range month.Days {
 				if day.NationsUrl != "" || day.RegionsUrl != "" || day.FoundingsUrl != "" {
-					buffer.WriteString(fmt.Sprintf("<h4>%d-%d-%d</h4>", year.Year, month.Month, day.Day))
+					buffer.WriteString(fmt.Sprintf("<h4>%d-%02d-%02d</h4>", year.Year, month.Month, day.Day))
 					buffer.WriteString("<ul>")
 
 					if day.NationsUrl != "" {
