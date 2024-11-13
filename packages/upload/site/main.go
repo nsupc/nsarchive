@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"regexp"
 	"sort"
 	"time"
 
@@ -19,6 +20,7 @@ var bucketName = "nsarchive"
 // nations file format: nations/YYYY-MM-DD-nations.xml.gz
 // regions file format: regions/YYYY-MM-DD-regions.xml.gz
 // foundings file format: foundings/YYYY-MM-DD-foundings.json
+var re = regexp.MustCompile(`\d{4}-\d{2}-\d{2}`)
 
 var urlPrefix = "file/nsarchive/%s"
 
@@ -28,8 +30,65 @@ func monthFromIndex(index int) string {
 	return months[index-1]
 }
 
+// source: https://gist.github.com/chadleeshaw/5420caa98498c46a84ce94cd9655287a
+func byteCounter(b int64) string {
+	const unit = 1000
+	if b < unit {
+		return fmt.Sprintf("%d B", b)
+	}
+	div, exp := int64(unit), 0
+	for n := b / unit; n >= unit; n /= unit {
+		div *= unit
+		exp++
+	}
+	return fmt.Sprintf("%.1f %cB",
+		float64(b)/float64(div), "kMGTPE"[exp])
+}
+
+type Item struct {
+	Url  string
+	Size string
+	SHA1 string
+}
+
 type Files struct {
 	Years []Year
+}
+
+func (f *Files) addItems(prefix string, bucket *b2.Bucket) error {
+	ctx := context.Background()
+
+	items := bucket.List(ctx, b2.ListPrefix(prefix))
+	for items.Next() {
+		attrs, err := items.Object().Attrs(ctx)
+		if err != nil {
+			return err
+		}
+
+		date, err := time.Parse("2006-01-02", re.FindString(attrs.Name))
+		if err != nil {
+			return err
+		}
+
+		day := f.getDate(date)
+
+		item := Item{
+			Url:  fmt.Sprintf(urlPrefix, attrs.Name),
+			Size: byteCounter(attrs.Size),
+			SHA1: attrs.SHA1,
+		}
+
+		switch prefix {
+		case "nations/":
+			day.Nations = item
+		case "regions/":
+			day.Regions = item
+		case "foundings/":
+			day.Foundings = item
+		}
+	}
+
+	return nil
 }
 
 func (f *Files) getDate(date time.Time) *Day {
@@ -87,18 +146,18 @@ func (f *Files) generateHTML() []byte {
 			buffer.WriteString(fmt.Sprintf("<summary class=\"month\">%s</summary>", monthFromIndex(month.Month)))
 
 			for _, day := range month.Days {
-				if day.NationsUrl != "" || day.RegionsUrl != "" || day.FoundingsUrl != "" {
+				if day.Nations.Url != "" || day.Regions.Url != "" || day.Foundings.Url != "" {
 					buffer.WriteString(fmt.Sprintf("<h4>%d-%02d-%02d</h4>", year.Year, month.Month, day.Day))
 					buffer.WriteString("<ul>")
 
-					if day.NationsUrl != "" {
-						buffer.WriteString(fmt.Sprintf("<li><a href=\"%s\">nations</a></li>", day.NationsUrl))
+					if day.Nations.Url != "" {
+						buffer.WriteString(fmt.Sprintf("<li><a href=\"%s\">nations</a> (%s) <br> SHA1: <code>%s</code></li>", day.Nations.Url, day.Nations.Size, day.Nations.SHA1))
 					}
-					if day.RegionsUrl != "" {
-						buffer.WriteString(fmt.Sprintf("<li><a href=\"%s\">regions</a></li>", day.RegionsUrl))
+					if day.Regions.Url != "" {
+						buffer.WriteString(fmt.Sprintf("<li><a href=\"%s\">regions</a> (%s) <br> SHA1: <code>%s</code></li>", day.Regions.Url, day.Regions.Size, day.Regions.SHA1))
 					}
-					if day.FoundingsUrl != "" {
-						buffer.WriteString(fmt.Sprintf("<li><a href=\"%s\" download>foundings</a></li>", day.FoundingsUrl))
+					if day.Foundings.Url != "" {
+						buffer.WriteString(fmt.Sprintf("<li><a href=\"%s\" download>foundings</a> (%s) <br> SHA1: <code>%s</code></li>", day.Foundings.Url, day.Foundings.Size, day.Foundings.SHA1))
 					}
 
 					buffer.WriteString("</ul>")
@@ -199,50 +258,20 @@ func (m *Month) getDay(day int) *Day {
 }
 
 type Day struct {
-	Day          int
-	NationsUrl   string
-	RegionsUrl   string
-	FoundingsUrl string
+	Day       int
+	Nations   Item
+	Regions   Item
+	Foundings Item
 }
 
 func createFileList(bucket *b2.Bucket) (Files, error) {
 	result := Files{}
-	ctx := context.Background()
 
-	nations := bucket.List(ctx, b2.ListPrefix("nations/"))
-	for nations.Next() {
-		date, err := time.Parse("2006-01-02", nations.Object().Name()[8:18])
+	for _, prefix := range [3]string{"nations/", "regions/", "foundings/"} {
+		err := result.addItems(prefix, bucket)
 		if err != nil {
 			return Files{}, err
 		}
-
-		day := result.getDate(date)
-
-		day.NationsUrl = fmt.Sprintf(urlPrefix, nations.Object().Name())
-	}
-
-	regions := bucket.List(ctx, b2.ListPrefix("regions/"))
-	for regions.Next() {
-		date, err := time.Parse("2006-01-02", regions.Object().Name()[8:18])
-		if err != nil {
-			return Files{}, err
-		}
-
-		day := result.getDate(date)
-
-		day.RegionsUrl = fmt.Sprintf(urlPrefix, regions.Object().Name())
-	}
-
-	foundings := bucket.List(ctx, b2.ListPrefix("foundings/"))
-	for foundings.Next() {
-		date, err := time.Parse("2006-01-02", foundings.Object().Name()[10:20])
-		if err != nil {
-			return Files{}, err
-		}
-
-		day := result.getDate(date)
-
-		day.FoundingsUrl = fmt.Sprintf(urlPrefix, foundings.Object().Name())
 	}
 
 	// sort the result (foundings mess it up sometimes)
