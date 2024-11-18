@@ -104,7 +104,7 @@ func getFoundings(client *http.Client, yesterday time.Time, today time.Time) ([]
 
 		happenings, err := getHappenings(client, yesterday.Unix(), today.Unix(), sinceid, beforeid)
 		if err != nil {
-			log.Fatal(err)
+			log.Fatalf("Error retrieving foundings: %v", err)
 		}
 
 		count := len(happenings.Events)
