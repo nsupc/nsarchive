@@ -103,7 +103,7 @@ func getFoundings(client *http.Client, yesterday time.Time, today time.Time) ([]
 		}
 
 		happenings, err := getHappenings(client, yesterday.Unix(), today.Unix(), sinceid, beforeid)
-		if err != nil {
+		if err != nil && err != io.EOF {
 			log.Fatalf("Error retrieving foundings: %v", err)
 		}
 
